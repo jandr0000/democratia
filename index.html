@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Democracia · prueba</title>
+<link rel="icon" href="data:,">
+<style>
+:root{
+  --bg:#f6f4ef; --surface:#ffffff; --ink:#1c2330; --muted:#5d6675; --line:#dcd8cf;
+  --accent:#234e70; --accent-ink:#ffffff; --soft:#eaf0f5; --ok:#2f6b3f;
+  --warn-bg:#fff3d6; --warn-ink:#6f4300; --warn-line:#e6c77a; --danger:#9b2c2c;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#12151b; --surface:#1b2029; --ink:#e8eaee; --muted:#a0a8b5; --line:#2f3642;
+    --accent:#8fbbe0; --accent-ink:#0d1620; --soft:#222a36; --ok:#7cc592;
+    --warn-bg:#3a2e12; --warn-ink:#f1d48a; --warn-line:#6b5420; --danger:#f19a9a;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-wrap:anywhere}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;line-height:1.2;margin:0 0 .5rem}
+h1{font-size:1.9rem} h2{font-size:1.35rem} h3{font-size:1.1rem}
+p{margin:.4rem 0}
+a{color:var(--accent)}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:calc(8px + env(safe-area-inset-top)) 0 8px}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{font-family:Georgia,serif;font-weight:700;font-size:1.15rem}
+.chips{display:flex;gap:6px}
+.chip{display:inline-block;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 10px;font-size:.85rem;font-weight:600;white-space:nowrap}
+.chip.unv{background:var(--warn-bg);color:var(--warn-ink);border-color:var(--warn-line)}
+.chip.tag{font-weight:500;color:var(--muted)}
+main{padding:16px 0 96px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;margin:0 0 12px}
+.card.top{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.notice{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.92rem;margin:12px 0}
+.muted{color:var(--muted)} .small{font-size:.88rem}
+.err{color:var(--danger);font-size:.92rem;min-height:1.2em;margin:.3rem 0}
+.ok{color:var(--ok)}
+label{display:block;font-weight:600;margin:12px 0 4px}
+input[type=text],textarea,select{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:92px;resize:vertical}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button{font:inherit;font-weight:600;min-height:46px;padding:10px 16px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer;width:100%}
+button.sec{background:transparent;color:var(--accent)}
+button.small{min-height:38px;padding:6px 12px;width:auto}
+button:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row.split>button{flex:1 1 0}
+.rank{font-family:Georgia,serif;font-weight:700;font-size:1.3rem;color:var(--accent);min-width:1.6rem}
+.cardtxt{font-size:1.02rem;margin:.2rem 0 .4rem}
+.meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:.3rem 0}
+.src{font-size:.86rem;color:var(--muted)}
+.score{font-weight:700}
+.stepper{display:flex;align-items:center;gap:10px;margin-top:8px}
+.stepper button{width:44px;min-height:44px;padding:0;font-size:1.3rem}
+.stepper .n{min-width:2.5rem;text-align:center;font-weight:700;font-size:1.1rem}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 0;background:transparent;color:var(--accent)}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.pick{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--line);font-weight:400}
+.pick.on{border-color:var(--accent);background:var(--soft)}
+.pick .box{flex:0 0 22px;height:22px;border:2px solid var(--accent);border-radius:6px;margin-top:2px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)}
+.bar{height:8px;background:var(--soft);border-radius:999px;overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;background:var(--accent)}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .wrap{display:grid;grid-template-columns:repeat(5,1fr);gap:0;padding:0}
+nav.tabs button{border:0;border-radius:0;background:transparent;color:var(--muted);min-height:52px;padding:6px 2px;font-size:.8rem;font-weight:600}
+nav.tabs button.on{color:var(--accent);box-shadow:inset 0 3px 0 var(--accent)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(68px + env(safe-area-inset-bottom));z-index:9;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:10px;max-width:90%;font-size:.92rem;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+details{margin:6px 0} summary{cursor:pointer;font-weight:600;min-height:32px}
+.counter{font-size:.85rem;color:var(--muted);text-align:right}
+.counter.bad{color:var(--danger);font-weight:700}
+ul.clean{padding-left:1.1rem;margin:.3rem 0} ul.clean li{margin:.25rem 0}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div id="toast" class="hidden" role="status" aria-live="polite"></div>
+<div id="app"></div>
+<script>
+const SEED = {"cartas": [{"id": "H1", "tipo": "hecho", "tema": "Corrupción", "texto": "En 2025 España sacó 55 sobre 100 en el Índice de Percepción de la Corrupción, su peor dato desde 2012.", "fuente": "Transparencia Internacional (CPI 2025), cifra vía EY", "url": "https://www.ey.com/es_es/the-cfo-agenda/analisis-indice-percepcion-corrupcion-2025", "nivel_fuente": "secundaria", "crowd_v": 42, "crowd_timon": 2}, {"id": "H2", "tipo": "hecho", "tema": "Justicia", "texto": "El CGPJ tiene 20 vocales: 12 jueces y magistrados, 4 propuestos por el Congreso y 4 por el Senado (mayoría de 3/5 en cada Cámara).", "fuente": "Constitución Española, art. 122.3 (BOE)", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229", "nivel_fuente": "oficial", "crowd_v": 58, "crowd_timon": 3}, {"id": "H3", "tipo": "hecho", "tema": "Economía", "texto": "En el Reino Unido se puede ahorrar hasta 20.000 £ al año en cuentas ISA libres de impuestos (curso fiscal 2026-27).", "fuente": "GOV.UK, Individual Savings Accounts", "url": "https://www.gov.uk/individual-savings-accounts", "nivel_fuente": "oficial", "crowd_v": 30, "crowd_timon": 0}, {"id": "H4", "tipo": "hecho", "tema": "Instituciones", "texto": "La pensión especial de exparlamentarios con 7 años en el cargo se eliminó en 2011; quienes ya la cobraban la mantienen.", "fuente": "Maldita.es (verificación)", "url": "https://maldita.es/malditobulo/20210903/parlamentarios-espana-pension-vitalicia/", "nivel_fuente": "secundaria", "crowd_v": 33, "crowd_timon": 1}, {"id": "H5", "tipo": "hecho", "tema": "Transparencia", "texto": "Muchas leyes se aprueban sin que después se evalúe si lograron su objetivo.", "fuente": null, "url": null, "nivel_fuente": "sin fuente", "crowd_v": 27, "crowd_timon": 0}, {"id": "O1", "tipo": "opinión", "tema": "Instituciones", "texto": "El poder legislativo y el ejecutivo no son independientes en España.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 44, "crowd_timon": 2}, {"id": "O2", "tipo": "opinión", "tema": "Transparencia", "texto": "Los partidos deberían publicar cada año sus cuentas completas en un formato abierto y comparable.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 88, "crowd_timon": 41}, {"id": "O3", "tipo": "opinión", "tema": "Instituciones", "texto": "Los cargos públicos deberían cobrar su pensión con las mismas reglas que cualquier otro trabajador.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 50, "crowd_timon": 8}, {"id": "O4", "tipo": "opinión", "tema": "Economía", "texto": "España debería crear una cuenta de ahorro e inversión libre de impuestos y con tope anual, parecida a la ISA británica.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 40, "crowd_timon": 4}, {"id": "O5", "tipo": "opinión", "tema": "Transparencia", "texto": "Los nombramientos en organismos de control deberían decidirse por mérito y concurso público.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 84, "crowd_timon": 36}, {"id": "O6", "tipo": "opinión", "tema": "Transparencia", "texto": "Todos los contratos públicos deberían publicarse completos, con su coste final, en un portal único.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 66, "crowd_timon": 20}, {"id": "O7", "tipo": "opinión", "tema": "Transparencia", "texto": "Toda reforma importante debería incluir una evaluación independiente a los tres años.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 79, "crowd_timon": 30}, {"id": "O8", "tipo": "opinión", "tema": "Instituciones", "texto": "Cada ley debería publicarse con un resumen claro de qué cambia y a quién afecta.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 61, "crowd_timon": 7}, {"id": "O9", "tipo": "opinión", "tema": "Instituciones", "texto": "Los diputados deberían explicar públicamente, cada año, cómo han votado y por qué.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 52, "crowd_timon": 4}, {"id": "O10", "tipo": "opinión", "tema": "Instituciones", "texto": "Las iniciativas ciudadanas con suficientes apoyos deberían recibir una respuesta formal y razonada del Parlamento.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 55, "crowd_timon": 6}, {"id": "O11", "tipo": "opinión", "tema": "Educación", "texto": "La educación necesita un pacto estable entre todas las fuerzas que no se rompa con cada cambio de gobierno.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 38, "crowd_timon": 5}, {"id": "O12", "tipo": "opinión", "tema": "Vivienda", "texto": "Hace falta más vivienda asequible; para lograrla habría que agilizar los trámites de suelo y licencias.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 36, "crowd_timon": 2}, {"id": "O13", "tipo": "opinión", "tema": "Justicia", "texto": "Los jueces deberían ser elegidos y ascendidos solo por criterios profesionales, nunca políticos.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 47, "crowd_timon": 6}, {"id": "H6", "tipo": "hecho", "tema": "Movilidad", "texto": "En Alemania, la norma RASt 06 recomienda islas centrales o, si encaja, una rotonda a la entrada de las localidades para frenar el tráfico.", "fuente": "Parlamento de Baviera (respuesta escrita del Gobierno regional)", "url": "https://www.bayern.landtag.de/www/ElanTextAblage_WP17/Drucksachen/Schriftliche%20Anfragen/17_0000359.pdf", "nivel_fuente": "oficial", "crowd_v": 24, "crowd_timon": 0}, {"id": "O14", "tipo": "opinión", "tema": "Movilidad", "texto": "A la entrada de los pueblos deberían ponerse miniglorietas u otros elementos físicos que obliguen a reducir la velocidad.", "fuente": null, "url": null, "nivel_fuente": null, "crowd_v": 28, "crowd_timon": 3}], "articulos": [{"id": "A1", "titulo": "Cómo se compone el Consejo General del Poder Judicial", "texto": "El CGPJ lo preside el presidente del Tribunal Supremo y tiene 20 vocales nombrados por el Rey por 5 años: 12 jueces y magistrados, y 8 juristas de reconocida competencia (4 propuestos por el Congreso y 4 por el Senado, por mayoría de 3/5). La ley orgánica determina cómo se eligen los 12 jueces.", "fuente": "Constitución Española, art. 122 (BOE)", "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1978-31229", "nivel_fuente": "oficial"}, {"id": "A2", "titulo": "La corrupción percibida en España", "texto": "El Índice de Percepción de la Corrupción de Transparencia Internacional puntúa de 0 (muy corrupto) a 100 (muy limpio). España obtuvo 55 puntos en 2025 y 56 en 2024.", "fuente": "Transparencia Internacional, cifras vía EY", "url": "https://www.ey.com/es_es/the-cfo-agenda/analisis-indice-percepcion-corrupcion-2025", "nivel_fuente": "secundaria"}, {"id": "A3", "titulo": "La ISA británica: ahorrar sin impuestos", "texto": "En el Reino Unido, las Individual Savings Accounts (ISA) permiten ahorrar libre de impuestos hasta un límite anual: 20.000 £ en el curso fiscal 2026-27.", "fuente": "GOV.UK, Individual Savings Accounts", "url": "https://www.gov.uk/individual-savings-accounts", "nivel_fuente": "oficial"}, {"id": "A4", "titulo": "Las pensiones de los parlamentarios", "texto": "Hasta 2011 existía una pensión especial para exparlamentarios con al menos 7 años como diputado o senador (tiempo en el cargo, no de cotización). Se eliminó ese año y quienes ya la cobraban la conservan. En agosto de 2021 la cobraban 117 personas.", "fuente": "Maldita.es (verificación)", "url": "https://maldita.es/malditobulo/20210903/parlamentarios-espana-pension-vitalicia/", "nivel_fuente": "secundaria"}], "timon_candidatas": ["O2", "O5", "O7"], "codigos": ["D23-KTK", "GPD-AH8", "XUY-ZR9", "P5G-9AB", "78Y-7CA", "7WK-RDU", "B6T-3JH", "R6Z-W55", "N5U-3GW", "B2K-M6U"], "codigo_alex": "UVQ-RZP", "multitud": 60};
+(function(){
+'use strict';
+
+/* ---------- Constantes de la economía (suposición, aprobada en el punto de control 1) ---------- */
+const CAP_V=20, START_V=10, DAILY_V=6, REPARTO_V=2, MAX_REP=3, WRITE_P=3, P_TO_V=3;
+const MAXLEN=150, PER_CARD_MAX=6, PER_REP_MAX=3, CROWD=SEED.multitud;
+const DAY=86400000, KEY='democracia-prueba-v1';
+const TEMAS=['Instituciones','Transparencia','Justicia','Economía','Educación','Vivienda','Movilidad','Otro'];
+const PARTIDOS=['pp','psoe','vox','erc','junts','pnv','bildu','bng','cup','upn','más madrid','mas madrid','partido popular','partido socialista','izquierda unida','compromís','compromis'];
+const PARTY_RE=new RegExp('(^|[^\\p{L}])('+PARTIDOS.map(s=>s.replace(/\s+/g,'\\s+')).join('|')+')($|[^\\p{L}])','iu');
+const QS=[
+ {k:'q1',t:'¿Lo entendiste?',o:['Sí','Más o menos','No']},
+ {k:'q2',t:'¿Volverías mañana?',o:['Sí','Quizá','No']},
+ {k:'q3',t:'¿El ranking te pareció creíble?',o:['Sí','Más o menos','No']}
+];
+
+/* ---------- Utilidades ---------- */
+const $=(s,r)=>(r||document).querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function h32(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function shuffle(arr,rnd){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function pad(n){return n<10?'0'+n:''+n;}
+function today(){const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function dayIdx(){return Math.floor((Date.now()-new Date().getTimezoneOffset()*60000)/DAY);}
+function normCode(s){return String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+const VALID=SEED.codigos.concat([SEED.codigo_alex]).map(normCode);
+
+/* ---------- Estado y almacenamiento (solo navegador) ---------- */
+let persistOK=true, memStore=null, st=null;
+function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null;}catch(e){persistOK=false;return memStore;}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){persistOK=false;memStore=st;}}
+function newState(code,nick){
+  return {codigo:code,apodo:nick,V:START_V,P:0,dias:[],lastDay:null,onb:null,onbDone:false,
+    votes:{},rep:{day:null,n:0,firstP:false,cur:null},repTotal:0,mias:[],timon:[],timonPaid:false,
+    ans:{},comment:'',nextM:1,paid:{}};
+}
+
+/* ---------- Tarjetas y multitud simulada ---------- */
+function allCards(){
+  return SEED.cartas.concat(st.mias.map(m=>({id:m.id,tipo:m.tipo,tema:m.tema,texto:m.texto,fuente:m.fuente,url:null,
+    nivel_fuente:m.fuente?'aportada':null,justif:m.justif,mia:true,ts:m.ts,crowd_timon:0})));
+}
+function byId(id){return allCards().find(c=>c.id===id);}
+function crowdV(c){
+  if(c.mia){const fin=6+(h32(c.texto)%19);return Math.floor(fin*Math.min(1,Math.max(0,(Date.now()-c.ts))/DAY));}
+  return c.crowd_v+(h32(c.id+':'+dayIdx())%9)-4;
+}
+function mineV(c){return st.votes[c.id]||0;}
+function totalV(c){return crowdV(c)+mineV(c);}
+function ranking(){return allCards().slice().sort((a,b)=>totalV(b)-totalV(a)||(a.id<b.id?-1:1));}
+function timonScore(c){return (c.crowd_timon||0)+(st.timon.indexOf(c.id)>=0?1:0);}
+function timonRanking(){return allCards().slice().sort((a,b)=>timonScore(b)-timonScore(a)||(a.id<b.id?-1:1));}
+
+function srcHtml(c){
+  if(c.tipo!=='hecho') return '';
+  if(c.mia){
+    if(c.fuente){
+      const f=/^https?:\/\//i.test(c.fuente)?'<a href="'+esc(c.fuente)+'" target="_blank" rel="noopener noreferrer">'+esc(c.fuente)+'</a>':esc(c.fuente);
+      return '<div class="src">Fuente aportada por el autor (sin comprobar): '+f+'</div>';
+    }
+    return '<span class="chip unv">[unverificado]</span>';
+  }
+  if(c.fuente){
+    const lvl=c.nivel_fuente==='oficial'?'fuente oficial':'fuente secundaria, por comprobar';
+    const nm=c.url?'<a href="'+esc(c.url)+'" target="_blank" rel="noopener noreferrer">'+esc(c.fuente)+'</a>':esc(c.fuente);
+    return '<div class="src">Fuente: '+nm+' · '+lvl+'</div>';
+  }
+  return '<span class="chip unv">[unverificado]</span>';
+}
+function cardHtml(c,o){
+  o=o||{};
+  let h='<div class="card'+(o.top?' top':'')+'">';
+  h+='<div class="row" style="align-items:flex-start;flex-wrap:nowrap">';
+  if(o.rank) h+='<div class="rank">'+o.rank+'</div>';
+  h+='<div style="flex:1;min-width:0">';
+  h+='<div class="cardtxt">'+esc(c.texto)+'</div>';
+  h+='<div class="meta"><span class="chip tag">'+(c.tipo==='hecho'?'Hecho':'Opinión')+'</span><span class="chip tag">'+esc(c.tema)+'</span>'+(c.mia?'<span class="chip tag">Tuya</span>':'')+srcHtml(c).replace(/^<div class="src">/,'<span class="src">').replace(/<\/div>$/,'</span>')+'</div>';
+  if(c.justif) h+='<div class="src"><b>Justificación:</b> '+esc(c.justif)+'</div>';
+  if(o.score) h+='<div class="small"><span class="score">'+totalV(c)+' V</span> <span class="muted">· multitud simulada '+crowdV(c)+' · tú '+mineV(c)+'</span></div>';
+  if(o.extra) h+=o.extra;
+  h+='</div></div></div>';
+  return h;
+}
+
+/* ---------- Lógica ---------- */
+let ui={tab:'inicio',view:null,err:'',msg:'',confirmReset:false};
+let toastT=null;
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.remove('hidden');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.add('hidden'),3200);}
+function clampV(){if(st.V>CAP_V)st.V=CAP_V;if(st.V<0)st.V=0;}
+
+function applyDaily(){
+  const t=today();
+  if(st.lastDay!==t){
+    st.lastDay=t; if(st.dias.indexOf(t)<0) st.dias.push(t);
+    st.V=Math.min(CAP_V,st.V+DAILY_V);
+    st.rep={day:t,n:0,firstP:false,cur:null};
+    save();
+    return true;
+  }
+  return false;
+}
+function checkClaimRewards(){
+  let changed=false;
+  st.mias.forEach(m=>{
+    if(!st.paid[m.id]){
+      const c=byId(m.id);
+      if(c&&crowdV(c)>=10){st.paid[m.id]=true;st.P+=3;changed=true;toast('Tu afirmación reunió 10 V de la multitud: +3 P');}
+    }
+  });
+  if(changed) save();
+}
+function pickArticles(){
+  const rnd=mulberry(h32(st.codigo+st.apodo));
+  return shuffle(SEED.articulos.map(a=>a.id),rnd).slice(0,3);
+}
+function drawReparto(){
+  const rnd=Math.random;
+  const cand=allCards().filter(c=>!c.mia&&(st.votes[c.id]||0)<PER_CARD_MAX);
+  const fresh=shuffle(cand.filter(c=>!st.votes[c.id]),rnd), seen=shuffle(cand.filter(c=>st.votes[c.id]),rnd);
+  return fresh.concat(seen).slice(0,4).map(c=>c.id);
+}
+function spent(cur){return Object.keys(cur.alloc).reduce((s,k)=>s+cur.alloc[k],0);}
+
+function validateClaim(text,tipo,fuente,just){
+  if(!text.trim()) return 'Escribe tu afirmación.';
+  if(text.length>MAXLEN) return 'La afirmación supera '+MAXLEN+' caracteres.';
+  if(just.length>MAXLEN) return 'La justificación supera '+MAXLEN+' caracteres.';
+  const all=text+' '+just+' '+fuente;
+  if(PARTY_RE.test(all)) return 'Evita nombres de partidos: esta prueba habla de ideas y datos, no de siglas.';
+  if(/@|https?:\/\/|www\./i.test(text+' '+just)) return 'No pongas correos ni enlaces en el texto (la fuente va en su campo).';
+  if(/\b\d{9}\b/.test(all.replace(/[\s.-]/g,''))||/\b\d{3}[\s.-]?\d{3}[\s.-]?\d{3}\b/.test(all)) return 'No incluyas teléfonos ni datos personales.';
+  return '';
+}
+
+function buildReport(){
+  const L=[];
+  L.push('DEMOCRACIA · INFORME DE PRUEBA');
+  L.push('Código: '+st.codigo+' · Apodo: '+st.apodo);
+  L.push('Fecha del informe: '+today()+' · Días con visita: '+st.dias.length+' ('+st.dias.join(', ')+')');
+  L.push('Saldo: V '+st.V+'/'+CAP_V+' · P '+st.P+' · Repartos hechos: '+st.repTotal);
+  L.push('');
+  L.push('ARTÍCULOS (¿Merece la pena?)');
+  if(st.onb) st.onb.ids.forEach(id=>{const a=SEED.articulos.find(x=>x.id===id);L.push('- '+id+' '+a.titulo+': '+(st.onb.ans[id]||'sin responder'));});
+  L.push('');
+  L.push('VOTOS REPARTIDOS');
+  const vk=Object.keys(st.votes).filter(k=>st.votes[k]>0);
+  if(!vk.length) L.push('- (ninguno)');
+  vk.forEach(k=>{const c=byId(k);L.push('- '+k+' ('+st.votes[k]+' V) '+(c?c.texto.slice(0,60)+(c.texto.length>60?'…':''):''));});
+  L.push('');
+  L.push('MIS AFIRMACIONES');
+  if(!st.mias.length) L.push('- (ninguna)');
+  st.mias.forEach(m=>{const c=byId(m.id);L.push('- ['+(m.tipo==='hecho'?'hecho':'opinión')+'/'+m.tema+'] "'+m.texto+'"'+(m.tipo==='hecho'?' | Fuente: '+(m.fuente||'[unverificado]'):'')+(m.justif?' | Justificación: '+m.justif:'')+' | Apoyo de la multitud simulada: '+crowdV(c)+' V');});
+  L.push('');
+  L.push('TOMA EL TIMÓN (mi top 3)');
+  if(!st.timon.length) L.push('- (sin elegir)');
+  st.timon.forEach(id=>{const c=byId(id);L.push('- '+id+' '+(c?c.texto:''));});
+  L.push('');
+  L.push('PREGUNTAS FINALES');
+  QS.forEach((q,i)=>L.push((i+1)+'. '+q.t+' '+(st.ans[q.k]||'sin responder')));
+  if(st.comment&&st.comment.trim()){L.push('');L.push('Comentario: '+st.comment.trim());}
+  return L.join('\n');
+}
+
+/* ---------- Vistas ---------- */
+function vEntry(){
+  return '<div class="wrap" style="padding-top:calc(28px + env(safe-area-inset-top))">'+
+  '<h1>Democracia</h1><p class="lead muted" style="font-size:1.1rem">Gente informada opina mejor.</p>'+
+  '<p>Escribe, vota y ordena afirmaciones cortas sobre los problemas del país. Sin partidos, sin ruido.</p>'+
+  '<div class="notice"><b>Esto es una prueba.</b> La «multitud» está simulada y no se comparte entre personas: cada uno ve su propio mundo. Todo se guarda solo en tu navegador. No uses tu nombre real ni datos personales.</div>'+
+  '<label for="code">Código de invitación</label><input id="code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC-123">'+
+  '<label for="nick">Apodo (no tu nombre real)</label><input id="nick" type="text" autocomplete="off" maxlength="20" placeholder="Entre 2 y 20 letras">'+
+  '<div class="err" id="err" role="alert">'+esc(ui.err)+'</div>'+
+  '<button data-act="enter">Entrar</button></div>';
+}
+function header(){
+  return '<header class="top"><div class="wrap"><span class="brand">Democracia</span><span class="chips"><span class="chip" title="Votos">V '+st.V+'/'+CAP_V+'</span><span class="chip" title="Participación">P '+st.P+'</span></span></div></header>';
+}
+function tabs(){
+  const T=[['inicio','Inicio'],['ranking','Ranking'],['escribir','Escribir'],['timon','Timón'],['informe','Informe']];
+  return '<nav class="tabs"><div class="wrap">'+T.map(t=>'<button data-act="tab" data-v="'+t[0]+'" class="'+(ui.tab===t[0]?'on':'')+'">'+t[1]+'</button>').join('')+'</div></nav>';
+}
+function vOnb(){
+  const o=st.onb,id=o.ids[o.i],a=SEED.articulos.find(x=>x.id===id);
+  const lvl=a.nivel_fuente==='oficial'?'fuente oficial':'fuente secundaria, por comprobar';
+  return '<div class="wrap" style="padding-top:calc(24px + env(safe-area-inset-top))">'+
+   '<p class="muted small">Bienvenido, '+esc(st.apodo)+'. Lectura '+(o.i+1)+' de 3 · cada respuesta te da +1 P</p>'+
+   '<div class="bar"><i style="width:'+Math.round(100*o.i/3)+'%"></i></div>'+
+   '<div class="card" style="margin-top:14px"><h2>'+esc(a.titulo)+'</h2><p>'+esc(a.texto)+'</p>'+
+   '<p class="src">Fuente: <a href="'+esc(a.url)+'" target="_blank" rel="noopener noreferrer">'+esc(a.fuente)+'</a> · '+lvl+'</p></div>'+
+   '<h3>¿Merece la pena?</h3><div class="row split"><button data-act="onb" data-v="Sí">Sí</button><button class="sec" data-act="onb" data-v="No">No</button><button class="sec" data-act="onb" data-v="No estoy seguro">No estoy seguro</button></div></div>';
+}
+function vInicio(){
+  const t=today(), r=st.rep.day===t?st.rep:{n:0};
+  let h='<h2>Hola, '+esc(st.apodo)+'</h2><p class="muted small">Día '+st.dias.length+' · código '+esc(st.codigo)+'</p>';
+  if(!persistOK) h+='<div class="notice">Tu navegador no deja guardar datos: no cierres esta pestaña o perderás tu avance.</div>';
+  h+='<div class="notice"><b>Prueba:</b> la multitud está simulada y no se comparte entre personas.</div>';
+  h+='<div class="card"><h3>Hoy</h3>';
+  h+='<p><b>Reparto de votos</b> <span class="muted">('+r.n+'/'+MAX_REP+' hoy)</span><br><span class="small muted">4 tarjetas al azar. Terminarlo da +'+REPARTO_V+' V; el primero del día, +1 P.</span></p>';
+  h+='<button data-act="rep-start"'+(r.n>=MAX_REP?' disabled':'')+'>'+(r.n>=MAX_REP?'Has hecho los 3 de hoy':'Repartir votos')+'</button>';
+  h+='<p style="margin-top:14px"><b>Escribir una afirmación</b><br><span class="small muted">Cuesta '+WRITE_P+' P. Tienes '+st.P+' P.</span></p>';
+  h+='<button class="sec" data-act="tab" data-v="escribir">Ir a Escribir</button>';
+  h+='<p style="margin-top:14px"><b>Toma el timón</b><br><span class="small muted">'+(st.timonPaid?'Ya elegiste tus 3. Puedes cambiarlas.':'Elige tus 3 cosas (+2 P, una vez).')+'</span></p>';
+  h+='<button class="sec" data-act="tab" data-v="timon">Ir a Toma el timón</button>';
+  h+='<p style="margin-top:14px"><b>Cambiar P por V</b><br><span class="small muted">1 P = '+P_TO_V+' V (tope '+CAP_V+' V).</span></p>';
+  h+='<button class="sec" data-act="p2v"'+((st.P<1||st.V>=CAP_V)?' disabled':'')+'>Cambiar 1 P por '+P_TO_V+' V</button></div>';
+  h+='<div class="card"><h3>Cómo funciona</h3><ul class="clean small">'+
+   '<li><b>V (votos)</b>: los gastas para apoyar afirmaciones, de 1 a 3 por tarjeta. Vuelves cada día y recibes +'+DAILY_V+' (tope '+CAP_V+').</li>'+
+   '<li><b>P (participación)</b>: la ganas leyendo, repartiendo y aportando. Con '+WRITE_P+' P puedes escribir tu propia afirmación.</li>'+
+   '<li><b>Hecho u opinión</b>: una opinión o propuesta no necesita fuente. Un hecho sin fuente comprobable lleva la etiqueta <span class="chip unv">[unverificado]</span>.</li>'+
+   '<li>Al final, ve a <b>Informe</b>, responde 3 preguntas y copia tu actividad.</li></ul></div>';
+  h+='<div class="card"><h3>Lecturas</h3>'+SEED.articulos.map(a=>{
+     const ans=st.onb&&st.onb.ans[a.id];
+     return '<details><summary>'+esc(a.titulo)+(ans?' <span class="muted small">· tú: '+esc(ans)+'</span>':'')+'</summary><p class="small">'+esc(a.texto)+'</p><p class="src">Fuente: <a href="'+esc(a.url)+'" target="_blank" rel="noopener noreferrer">'+esc(a.fuente)+'</a> · '+(a.nivel_fuente==='oficial'?'fuente oficial':'fuente secundaria, por comprobar')+'</p></details>';
+  }).join('')+'</div>';
+  return h;
+}
+function vReparto(){
+  const cur=st.rep.cur, sp=spent(cur);
+  let h='<h2>Reparto de votos</h2><p class="muted small">Reparte de 0 a '+PER_REP_MAX+' V a cada tarjeta. Tienes '+st.V+' V; gastas '+sp+'.</p>';
+  cur.ids.forEach(id=>{
+    const c=byId(id), a=cur.alloc[id]||0, prev=st.votes[id]||0, maxHere=Math.min(PER_REP_MAX,PER_CARD_MAX-prev);
+    const canPlus=a<maxHere&&sp<st.V;
+    const extra='<div class="small muted">'+(prev?'Ya le diste '+prev+' V.':'Aún no la has votado.')+'</div><div class="stepper"><button class="sec" data-act="rep-m" data-id="'+id+'"'+(a<=0?' disabled':'')+' aria-label="Quitar un voto">−</button><span class="n">'+a+' V</span><button class="sec" data-act="rep-p" data-id="'+id+'"'+(canPlus?'':' disabled')+' aria-label="Añadir un voto">+</button></div>';
+    h+=cardHtml(c,{extra:extra});
+  });
+  h+='<div class="row split"><button class="sec" data-act="rep-cancel">Cancelar</button><button data-act="rep-done"'+(sp<1?' disabled':'')+'>Terminar (+'+REPARTO_V+' V)</button></div>';
+  if(sp<1) h+='<p class="small muted" style="margin-top:8px">Reparte al menos 1 V para terminar.</p>';
+  return h;
+}
+function vRanking(){
+  const R=ranking();
+  let h='<h2>Ranking</h2><p class="muted small">Afirmaciones ordenadas por votos (multitud simulada + los tuyos). Cambia un poco cada día.</p>';
+  R.forEach((c,i)=>{h+=cardHtml(c,{rank:i+1,score:true,top:i<3});});
+  return h;
+}
+function vEscribir(){
+  const can=st.P>=WRITE_P;
+  let h='<h2>Escribir una afirmación</h2><p class="muted small">Máx. '+MAXLEN+' caracteres. Cuesta '+WRITE_P+' P (tienes '+st.P+'). Neutral, sin nombres de partidos.</p>';
+  if(!can) h+='<div class="notice">Te faltan '+(WRITE_P-st.P)+' P. Los ganas valorando lecturas, haciendo tu primer reparto del día, eligiendo tu top 3 en Toma el timón o cuando la multitud apoya tus afirmaciones.</div>';
+  h+='<div class="card"><label for="ctext">Tu afirmación</label><textarea id="ctext" maxlength="400" placeholder="Ej.: Los presupuestos deberían explicarse en un resumen de una página."></textarea><div class="counter" id="ccount">0/'+MAXLEN+'</div>'+
+   '<label>Tipo</label><div class="seg" id="ctipo"><button type="button" class="on" data-act="tipo" data-v="opinión">Opinión o propuesta</button><button type="button" data-act="tipo" data-v="hecho">Afirma un hecho</button></div>'+
+   '<div id="cfwrap" class="hidden"><label for="cfuente">Fuente (opcional)</label><input id="cfuente" type="text" placeholder="Enlace o nombre de la fuente"><p class="small muted">Sin fuente, tu afirmación saldrá con la etiqueta [unverificado].</p></div>'+
+   '<label for="cjust">Justificación (opcional)</label><textarea id="cjust" maxlength="400" style="min-height:64px" placeholder="¿Por qué lo piensas? (máx. '+MAXLEN+')"></textarea><div class="counter" id="jcount">0/'+MAXLEN+'</div>'+
+   '<label for="ctema">Tema</label><select id="ctema">'+TEMAS.map(t=>'<option>'+t+'</option>').join('')+'</select>'+
+   '<div class="err" id="cerr" role="alert"></div>'+
+   '<button data-act="publish"'+(can?'':' disabled')+' id="cpub">Publicar (−'+WRITE_P+' P)</button></div>';
+  if(st.mias.length){
+    h+='<h3>Tus afirmaciones</h3>';
+    st.mias.slice().reverse().forEach(m=>{const c=byId(m.id);h+=cardHtml(c,{score:true});});
+  }
+  return h;
+}
+function vTimon(){
+  const TR=timonRanking().slice(0,3), tot=CROWD+(st.timon.length?1:0);
+  let h='<h2>Toma el timón</h2><p><b>Las 3 cosas que cambiándolas más mejorarían el rumbo a 1 año</b></p>';
+  h+='<p class="muted small">Porcentaje de votantes que la incluyen en su top 3 (multitud simulada + tú).</p>';
+  TR.forEach((c,i)=>{
+    const pct=Math.round(100*timonScore(c)/tot);
+    h+='<div class="card top"><div class="row" style="flex-wrap:nowrap;align-items:flex-start"><div class="rank">'+(i+1)+'</div><div style="flex:1;min-width:0"><div class="cardtxt">'+esc(c.texto)+'</div><div class="meta"><span class="chip tag">'+(c.tipo==='hecho'?'Hecho':'Opinión')+'</span>'+srcHtml(c).replace(/^<div class="src">/,'<span class="src">').replace(/<\/div>$/,'</span>')+'</div><div class="small"><span class="score">'+pct+'%</span></div><div class="bar"><i style="width:'+pct+'%"></i></div></div></div></div>';
+  });
+  h+='<h3 style="margin-top:18px">Tu elección</h3><p class="muted small">Marca exactamente 3 ('+(st.timonPaid?'puedes cambiarlas':'+2 P la primera vez')+').</p>';
+  const sel=ui.tsel||st.timon.slice();
+  allCards().forEach(c=>{
+    const on=sel.indexOf(c.id)>=0;
+    h+='<button type="button" class="pick'+(on?' on':'')+'" data-act="tpick" data-id="'+c.id+'"><span class="box">'+(on?'✓':'')+'</span><span>'+esc(c.texto)+'</span></button><div style="height:6px"></div>';
+  });
+  h+='<p class="small muted">Seleccionadas: '+sel.length+'/3</p><button data-act="tsave"'+(sel.length===3?'':' disabled')+'>Guardar mi top 3</button>';
+  return h;
+}
+function vInforme(){
+  let h='<h2>Informe</h2><p class="muted small">Responde y pulsa «Copiar mi actividad». Pega el texto en WhatsApp y envíamelo.</p>';
+  h+='<div class="card">';
+  QS.forEach(q=>{
+    h+='<p><b>'+q.t+'</b></p><div class="seg">'+q.o.map(o=>'<button type="button" data-act="ans" data-q="'+q.k+'" data-v="'+o+'" class="'+(st.ans[q.k]===o?'on':'')+'">'+o+'</button>').join('')+'</div>';
+  });
+  h+='<label for="ccom">Comentario (opcional): ¿qué pantalla no entendiste?</label><textarea id="ccom" style="min-height:64px" maxlength="500">'+esc(st.comment||'')+'</textarea></div>';
+  h+='<button data-act="copy">Copiar mi actividad</button><div class="err" id="cmsg" role="status" style="margin-top:8px">'+esc(ui.msg)+'</div>';
+  h+='<label for="rep">Si no se copia solo, selecciona este texto y cópialo:</label><textarea id="rep" readonly style="min-height:200px;font-size:14px"></textarea>';
+  h+='<div style="margin-top:20px">'+(ui.confirmReset?'<p class="small">Esto borra tu avance en este navegador. ¿Seguro?</p><div class="row split"><button class="sec" data-act="reset-no">No</button><button data-act="reset-yes">Sí, borrar</button></div>':'<button class="sec small" data-act="reset">Empezar de nuevo (borra mis datos)</button>')+'</div>';
+  return h;
+}
+
+/* ---------- Render ---------- */
+function render(){
+  const app=$('#app');
+  if(!st||!st.codigo){app.innerHTML=vEntry();return;}
+  if(!st.onbDone){app.innerHTML=vOnb();return;}
+  checkClaimRewards();
+  let body;
+  if(ui.view==='reparto'&&st.rep.cur) body=vReparto();
+  else{ui.view=null;body={inicio:vInicio,ranking:vRanking,escribir:vEscribir,timon:vTimon,informe:vInforme}[ui.tab]();}
+  app.innerHTML=header()+'<main><div class="wrap">'+body+'</div></main>'+tabs();
+  if(ui.tab==='informe'&&!ui.view){const r=$('#rep');if(r)r.value=buildReport();}
+  window.scrollTo(0,0);
+}
+
+/* ---------- Eventos ---------- */
+document.addEventListener('click',function(e){
+  const b=e.target.closest('[data-act]'); if(!b||b.disabled) return;
+  const act=b.dataset.act, v=b.dataset.v, id=b.dataset.id;
+  if(act==='enter'){
+    const code=normCode($('#code').value), nick=$('#nick').value.trim();
+    const fail=function(m){ui.err=m;const el=$('#err');if(el)el.textContent=m;};
+    if(VALID.indexOf(code)<0) return fail('Código no válido. Revísalo en el mensaje de WhatsApp.');
+    if(nick.length<2||nick.length>20) return fail('El apodo debe tener entre 2 y 20 caracteres.');
+    if(/@|\d{6,}/.test(nick)||PARTY_RE.test(nick)) return fail('Elige un apodo sin datos personales ni siglas.');
+    const pretty=code.length===6?code.slice(0,3)+'-'+code.slice(3):code;
+    st=newState(pretty,nick); st.onb={ids:pickArticles(),i:0,ans:{}};
+    applyDaily(); ui.err=''; save(); toast('Hoy: +'+DAILY_V+' V por entrar'); return render();
+  }
+  if(act==='onb'){
+    const o=st.onb; o.ans[o.ids[o.i]]=v; st.P+=1; o.i++;
+    if(o.i>=3){st.onbDone=true;ui.tab='inicio';toast('Listo. Ya puedes escribir una afirmación (3 P).');}
+    save(); return render();
+  }
+  if(act==='tab'){ui.tab=v;ui.view=null;ui.tsel=null;ui.msg='';ui.confirmReset=false;return render();}
+  if(act==='p2v'){if(st.P>=1&&st.V<CAP_V){st.P-=1;st.V=Math.min(CAP_V,st.V+P_TO_V);save();toast('1 P → '+P_TO_V+' V');render();}return;}
+  if(act==='rep-start'){
+    if(st.rep.n>=MAX_REP) return;
+    if(!st.rep.cur){const ids=drawReparto(); if(!ids.length){toast('No quedan tarjetas por votar.');return;} st.rep.cur={ids:ids,alloc:{}};}
+    ui.view='reparto'; save(); return render();
+  }
+  if(act==='rep-p'||act==='rep-m'){
+    const cur=st.rep.cur, a=cur.alloc[id]||0, prev=st.votes[id]||0, mx=Math.min(PER_REP_MAX,PER_CARD_MAX-prev);
+    if(act==='rep-p'&&a<mx&&spent(cur)<st.V) cur.alloc[id]=a+1;
+    if(act==='rep-m'&&a>0) cur.alloc[id]=a-1;
+    save(); const y=window.scrollY; render(); window.scrollTo(0,y); return;
+  }
+  if(act==='rep-cancel'){st.rep.cur=null;ui.view=null;save();return render();}
+  if(act==='rep-done'){
+    const cur=st.rep.cur, sp=spent(cur); if(sp<1||sp>st.V) return;
+    Object.keys(cur.alloc).forEach(k=>{if(cur.alloc[k]>0) st.votes[k]=(st.votes[k]||0)+cur.alloc[k];});
+    st.V-=sp; st.V=Math.min(CAP_V,st.V+REPARTO_V); st.rep.n++; st.repTotal++;
+    let msg='Reparto hecho: −'+sp+' V, +'+REPARTO_V+' V';
+    if(!st.rep.firstP){st.rep.firstP=true;st.P+=1;msg+=', +1 P';}
+    st.rep.cur=null; ui.view=null; ui.tab='ranking'; save(); toast(msg); return render();
+  }
+  if(act==='tipo'){
+    document.querySelectorAll('#ctipo button').forEach(x=>x.classList.toggle('on',x===b));
+    $('#cfwrap').classList.toggle('hidden',v!=='hecho'); return;
+  }
+  if(act==='publish'){
+    const text=$('#ctext').value.trim(), just=$('#cjust').value.trim(), fuente=($('#cfuente')?$('#cfuente').value.trim():'');
+    const tipo=document.querySelector('#ctipo button.on').dataset.v, tema=$('#ctema').value;
+    if(st.P<WRITE_P){$('#cerr').textContent='Te faltan P para publicar.';return;}
+    const err=validateClaim(text,tipo,tipo==='hecho'?fuente:'',just);
+    if(err){$('#cerr').textContent=err;return;}
+    const m={id:'M'+(st.nextM++),tipo:tipo,tema:tema,texto:text,fuente:tipo==='hecho'?fuente:'',justif:just,ts:Date.now()};
+    st.mias.push(m); st.P-=WRITE_P; save(); ui.tab='ranking'; toast('Publicada (−'+WRITE_P+' P). La multitud la irá viendo durante el día.'); return render();
+  }
+  if(act==='tpick'){
+    const sel=ui.tsel||st.timon.slice(), i=sel.indexOf(id);
+    if(i>=0) sel.splice(i,1); else if(sel.length<3) sel.push(id);
+    ui.tsel=sel; const y=window.scrollY; render(); window.scrollTo(0,y); return;
+  }
+  if(act==='tsave'){
+    const sel=ui.tsel||st.timon.slice(); if(sel.length!==3) return;
+    st.timon=sel.slice(); let m='Top 3 guardado';
+    if(!st.timonPaid){st.timonPaid=true;st.P+=2;m+=': +2 P';}
+    ui.tsel=null; save(); toast(m); return render();
+  }
+  if(act==='ans'){st.ans[b.dataset.q]=v;save();const y=window.scrollY;render();window.scrollTo(0,y);return;}
+  if(act==='copy'){
+    const text=buildReport(); const ta=$('#rep'); ta.value=text; let ok=false;
+    const done=function(good){
+      ui.msg=good?'Copiado. Pégalo en WhatsApp y envíamelo.':'No se pudo copiar solo. Mantén pulsado el cuadro de abajo, selecciona todo, copia y pega en WhatsApp.';
+      const el=$('#cmsg'); if(el){el.textContent=ui.msg;el.className=good?'ok':'err';}
+      if(!good){try{ta.focus();ta.select();ta.setSelectionRange(0,text.length);}catch(x){}}
+    };
+    try{
+      if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(function(){done(true);},function(){done(legacy(ta,text));});}
+      else done(legacy(ta,text));
+    }catch(x){done(legacy(ta,text));}
+    return;
+  }
+  if(act==='reset'){ui.confirmReset=true;return render();}
+  if(act==='reset-no'){ui.confirmReset=false;return render();}
+  if(act==='reset-yes'){try{localStorage.removeItem(KEY);}catch(x){} memStore=null; st=null; ui={tab:'inicio',view:null,err:'',msg:'',confirmReset:false}; return render();}
+});
+function legacy(ta,text){try{ta.focus();ta.select();ta.setSelectionRange(0,text.length);return document.execCommand('copy');}catch(x){return false;}}
+
+document.addEventListener('input',function(e){
+  const t=e.target;
+  if(t.id==='ctext'||t.id==='cjust'||t.id==='cfuente'){const ce=$('#cerr');if(ce)ce.textContent='';}
+  if(t.id==='ctext'||t.id==='cjust'){
+    const n=t.value.length, c=$(t.id==='ctext'?'#ccount':'#jcount');
+    c.textContent=n+'/'+MAXLEN; c.classList.toggle('bad',n>MAXLEN);
+  }
+  if(t.id==='ccom'){st.comment=t.value;save();const r=$('#rep');if(r)r.value=buildReport();}
+});
+document.addEventListener('visibilitychange',function(){
+  if(!document.hidden&&st&&st.codigo&&st.onbDone){if(applyDaily()){toast('Nuevo día: +'+DAILY_V+' V');} if(!ui.view&&ui.tab!=='escribir'&&ui.tab!=='informe') render();}
+});
+
+/* ---------- Arranque ---------- */
+st=load();
+if(st&&st.codigo&&st.onbDone){ if(applyDaily()) toast('Nuevo día: +'+DAILY_V+' V'); }
+render();
+})();
+</script>
+</body>
+</html>
